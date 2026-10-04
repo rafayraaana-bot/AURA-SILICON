@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AURA SILICON | Autonomous SoC & Silicon Compiler</title>
+    <meta name="description" content="AURA SILICON engineering preview: edit RTL, create immutable project versions, compile a supported subset, and download deterministic AURA IR JSON." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="icon" type="image/svg+xml" href="/aura-mark.svg" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <div class="brand">
+          <img class="brand-mark" src="/aura-mark.svg" alt="" />
+          <span>AURA SILICON</span>
+        </div>
+        <nav class="nav-links" aria-label="Main navigation">
+          <a href="#platform">Platform</a>
+          <a href="#workflow">Workflow</a>
+          <a href="/visualizer">Physical Layout</a>
+          <a href="/pricing">Pricing</a>
+          <a href="#security">Security</a>
+          <a href="#docs">Docs</a>
+        </nav>
+        <div class="nav-actions">
+          <a class="button secondary" href="/download">Download AURA SILICON</a>
+          <a class="button secondary" href="/login">Sign In</a>
+          <a class="button primary" href="/signup">Get Started</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <span class="eyebrow">Autonomous SoC &amp; silicon platform</span>
+            <h1>Author RTL, compile a supported subset, and inspect deterministic AURA IR.</h1>
+            <p>
+              Compile supported RTL to AURA IR, run local Icarus simulations, and launch OpenLane + SKY130
+              physical design when the WSL toolchain is ready. Inspect physical layout only after a real RTL
+              run produces verified GDSII.
+            </p>
+            <div class="hero-actions">
+              <a class="button primary" href="/signup">Get Started</a>
+              <a class="button secondary" href="/visualizer">Open Physical Layout Viewer</a>
+            </div>
+            <div class="hero-stats">
+              <div><strong>Immutable</strong><br /><span>source versions</span></div>
+              <div><strong>Server-side</strong><br /><span>subset compilation</span></div>
+              <div><strong>SHA-256</strong><br /><span>IR artifacts</span></div>
+            </div>
+          </div>
+
+          <div class="hero-card">
+            <div class="workflow-badge">
+              <span>Implemented compiler path</span>
+              <span class="badge">RTL subset</span>
+            </div>
+            <div class="pipeline">
+              <div class="pipeline-step"><span>RTL source</span><span>editable</span></div>
+              <div class="pipeline-step"><span>Lexer + subset parser</span><span>implemented</span></div>
+              <div class="pipeline-step"><span>AURA IR JSON</span><span>generated artifact</span></div>
+              <div class="pipeline-step"><span>OpenLane netlist</span><span>local OpenLane 2 flow</span></div>
+              <div class="pipeline-step"><span>Placement / routing</span><span>local OpenLane · SKY130 flow</span></div>
+              <div class="pipeline-step"><span>GDSII artifact</span><span>download after verified run</span></div>
+              <div class="pipeline-step"><span>Physical-layout viewer</span><span>verified GDSII required; no placeholder model</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="platform">
+        <div class="container">
+          <div class="section-header">
+            <h2>One platform for semiconductor engineering.</h2>
+            <p>The built-in RTL preview is limited; physical-design runs use a separately configured local OpenLane toolchain.</p>
+          </div>
+          <div class="grid-3">
+            <article class="card">
+              <h3>RTL &amp; HDL workflow</h3>
+              <p>Browser RTL editor, project files, immutable source snapshots, source-located diagnostics, and a limited module/port/declaration/continuous-assignment parser.</p>
+            </article>
+            <article class="card">
+              <h3>Compiler &amp; AURA IR</h3>
+              <p>Versioned JSON IR output is deterministically hashed and stored as a content-addressed artifact. AURA has no native netlist optimizer; a local OpenLane run can produce a synthesized netlist after setup.</p>
+            </article>
+            <article class="card">
+              <h3>Physical design</h3>
+              <p>The workspace can launch its local OpenLane 2 + SKY130 flow for floorplanning, placement/routing, and GDSII. Physical-design jobs are optional and do not block RTL editing or compilation. Results are downloadable only after real final artifacts are verified; congestion/signoff validation is not claimed.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="workflow">
+        <div class="container">
+          <div class="section-header">
+            <h2>What works today—and what remains.</h2>
+            <p>RTL compilation works independently. Optional physical-design jobs use the local OpenLane 2 + SKY130 flow when it is available on this machine.</p>
+          </div>
+          <div class="grid-3">
+            <article class="card">
+              <h3>Design mode</h3>
+              <p>Project files, an RTL editor, immutable versions, compilation controls, and source-located parser diagnostics.</p>
+            </article>
+            <article class="card">
+              <h3>Physical design mode</h3>
+              <p>OpenLane execution is integrated in the workspace and runs locally through WSL 2 with OpenLane 2 + SKY130. AURA reports no physical result unless a real run verifies final GDSII and netlist outputs; it does not claim congestion or signoff validation.</p>
+            </article>
+            <article class="card">
+              <h3>Visualization mode</h3>
+              <p>The authenticated physical-layout viewer offers an orbitable 3D exploded-layer view and a 2D top-down view of real polygons extracted from verified GDSII. It stays empty until a completed RTL-backed OpenLane run provides that artifact.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="pricing">
+        <div class="container">
+          <div class="section-header">
+            <h2>Plans configured for engineering teams.</h2>
+            <p>Pricing and plan limits load from the AURA backend. The current preview has no payment provider, so subscriptions cannot be purchased.</p>
+          </div>
+          <div class="pricing-controls">
+            <span>Display currency</span>
+            <div class="currency-toggle" role="group" aria-label="Pricing display currency">
+              <button class="currency-button active" type="button" data-currency="USD" aria-pressed="true">USD</button>
+              <button class="currency-button" type="button" data-currency="PKR" aria-pressed="false">PKR</button>
+            </div>
+          </div>
+          <p id="pricing-message" class="pricing-message" role="status" aria-live="polite"></p>
+          <div id="pricing-cards" class="pricing-grid" aria-live="polite"><p class="muted">Loading current plan configuration…</p></div>
+          <div class="pricing-footer"><a class="button secondary" href="/pricing">View plans &amp; checkout details</a><span>Monthly plan prices are stored in USD. PKR is display-only.</span></div>
+        </div>
+      </section>
+
+      <section class="section" id="security">
+        <div class="container">
+          <div class="section-header">
+            <h2>Security integration status.</h2>
+            <p>Email/password accounts, configurable GitHub and Google OAuth, and basic organization-scoped API access are implemented. SAML, fine-grained RBAC, and production session controls are not.</p>
+          </div>
+          <div class="grid-3">
+            <article class="card">
+              <h3>Identity</h3>
+              <p>Email/password sign-in is available. GitHub and Google sign-in activate when the API administrator configures their OAuth clients. Password recovery and SAML sign-in are not available.</p>
+            </article>
+            <article class="card">
+              <h3>Artifact security</h3>
+              <p>AURA IR files use SHA-256 content-addressed storage and organization checks. Project-level membership ACLs are not implemented.</p>
+            </article>
+            <article class="card">
+              <h3>Observability</h3>
+              <p>Jobs expose persisted stage/status/log records. Distributed tracing, worker telemetry, and streaming events are not implemented.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="docs">
+      <div class="container" style="display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;">
+        <div>
+          <div class="brand"><img class="brand-mark" src="/aura-mark.svg" alt="" /> <span>AURA SILICON</span></div>
+        </div>
+        <div>Engineering preview · Payment collection unavailable · No production desktop release</div>
+        <a href="/signup">Create account</a>
+      </div>
+    </footer>
+    <script src="/pricing.js"></script>
+  </body>
+</html>

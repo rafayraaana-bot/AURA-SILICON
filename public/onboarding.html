@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Onboarding | AURA SILICON</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="icon" type="image/svg+xml" href="/aura-mark.svg" />
+  </head>
+  <body>
+    <div class="onboarding-shell">
+      <div class="onboarding-card">
+        <div class="stepper" aria-label="Onboarding steps">
+          <div class="step-dot active"></div>
+          <div class="step-dot"></div>
+          <div class="step-dot"></div>
+          <div class="step-dot"></div>
+          <div class="step-dot"></div>
+        </div>
+
+        <div id="step-1" class="step-panel">
+          <div class="brand onboarding-brand"><img class="brand-mark" src="/aura-mark.svg" alt="" /><span>AURA SILICON</span></div>
+          <div class="eyebrow">Step 1</div>
+          <h1>Welcome to AURA SILICON</h1>
+          <p>Start an RTL project, compile the supported language subset, and inspect its generated AURA IR artifact.</p>
+          <div style="margin-top:24px;">
+            <button class="button primary" data-next="next">Continue</button>
+          </div>
+        </div>
+
+        <div id="step-2" class="step-panel hidden">
+          <div class="eyebrow">Step 2</div>
+          <h2>What are you working on?</h2>
+          <div class="check-grid" style="margin-top: 20px;">
+            <label class="check-card"><input type="checkbox" value="SoC Design" />SoC Design</label>
+            <label class="check-card"><input type="checkbox" value="RTL / HDL" />RTL / HDL</label>
+            <label class="check-card"><input type="checkbox" value="Physical Design" />Physical Design</label>
+            <label class="check-card"><input type="checkbox" value="ASIC Exploration" />ASIC Exploration</label>
+            <label class="check-card"><input type="checkbox" value="Research" />Research</label>
+            <label class="check-card"><input type="checkbox" value="Education" />Education</label>
+            <label class="check-card"><input type="checkbox" value="Enterprise" />Enterprise</label>
+          </div>
+          <div style="display:flex; gap:12px; margin-top:24px;">
+            <button class="button secondary" data-next="back">Back</button>
+            <button class="button primary" data-next="next">Continue</button>
+          </div>
+        </div>
+
+        <div id="step-3" class="step-panel hidden">
+          <div class="eyebrow">Step 3</div>
+          <h2>What would you like to do first?</h2>
+          <div class="check-grid" style="margin-top: 20px;">
+            <label class="check-card"><input type="radio" name="goal" value="Create Project" />Create Project</label>
+            <label class="check-card"><input type="radio" name="goal" value="Open Project" />Open Project</label>
+            <label class="check-card"><input type="radio" name="goal" value="Write RTL" />Write RTL</label>
+            <label class="check-card"><input type="radio" name="goal" value="Run Compiler" />Run Compiler</label>
+            <label class="check-card"><input type="radio" name="goal" value="Explore Physical Design" />Explore Physical Design</label>
+            <label class="check-card"><input type="radio" name="goal" value="Open Physical Layout Viewer" />Open Physical Layout Viewer</label>
+          </div>
+          <div style="display:flex; gap:12px; margin-top:24px;">
+            <button class="button secondary" data-next="back">Back</button>
+            <button class="button primary" data-next="next">Continue</button>
+          </div>
+        </div>
+
+        <div id="step-4" class="step-panel hidden">
+          <div class="eyebrow">Step 4</div>
+          <h2>Organization</h2>
+          <div class="check-grid" style="margin-top:20px;">
+            <label class="check-card"><input type="radio" name="org" value="Create Organization" />Create Organization</label>
+            <label class="check-card"><input type="radio" name="org" value="Join Organization" />Join Organization</label>
+            <label class="check-card"><input type="radio" name="org" value="Personal Workspace" />Personal Workspace</label>
+          </div>
+          <div style="display:flex; gap:12px; margin-top:24px;">
+            <button class="button secondary" data-next="back">Back</button>
+            <button class="button primary" data-next="next">Continue</button>
+          </div>
+        </div>
+
+        <div id="step-5" class="step-panel hidden">
+          <div class="eyebrow">Step 5</div>
+          <h2>You're Ready</h2>
+          <p>Everything is set for your first semiconductor workflow.</p>
+          <div style="margin-top:24px; display:flex; gap:12px; align-items:center;">
+            <button class="button primary" data-next="finish">Open AURA Workspace</button>
+            <button class="button secondary" data-next="skip">Skip</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

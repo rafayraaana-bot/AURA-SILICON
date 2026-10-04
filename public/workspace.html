@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AURA Workspace</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="icon" type="image/svg+xml" href="/aura-mark.svg" />
+  </head>
+  <body class="workspace-shell">
+    <header class="workspace-header">
+      <a class="brand" href="/"><img class="brand-mark" src="/aura-mark.svg" alt="" /><span>AURA SILICON</span></a>
+      <div class="right">
+        <span id="workspace-user" class="badge">Loading account</span>
+        <a class="button secondary" href="/visualizer" title="View physical layout only after a completed RTL-backed OpenLane run produces verified GDSII.">Physical Visualizer</a>
+        <button id="desktop-update-button" class="button secondary hidden" type="button">Check desktop updates</button>
+        <button id="signout-button" class="button secondary" type="button">Sign out</button>
+      </div>
+    </header>
+
+    <main class="engineering-workspace">
+      <section class="workspace-toolbar">
+        <div class="project-controls">
+          <label class="sr-only" for="project-select">Project</label>
+          <select id="project-select" aria-label="Project"></select>
+          <button id="new-project-button" class="button secondary" type="button">New Project</button>
+          <button id="open-folder-button" class="button secondary" type="button" title="Open the selected project's analysis, rescan its source folder, or review its settings.">Open Project Folder</button>
+          <button id="import-project-button" class="button primary" type="button" title="Scan and import RTL, testbenches, constraints, IP and project configuration">Import Hardware Project</button>
+          <input id="project-folder-input" class="hidden" type="file" webkitdirectory directory multiple />
+        </div>
+        <div class="project-controls">
+          <span id="version-state" class="muted">No immutable version selected</span>
+          <button id="save-button" class="button secondary" type="button">Save RTL</button>
+          <button id="compile-button" class="button primary" type="button">Create Version &amp; Compile</button>
+          <span id="rtl-save-status" class="muted" role="status" aria-live="polite">Edits are saved to the project only after you click Save RTL.</span>
+        </div>
+      </section>
+      <div id="desktop-update-status" class="workspace-notice hidden" role="status" aria-live="polite"></div>
+
+      <section id="folder-import-panel" class="import-overlay hidden" aria-labelledby="folder-import-title" role="dialog" aria-modal="true" aria-describedby="folder-import-status" tabindex="-1">
+        <div class="import-dialog">
+          <div class="import-dialog-header">
+            <div class="import-heading">
+              <div class="import-icon" aria-hidden="true">A</div>
+              <div>
+                <span class="eyebrow">AURA PROJECT INTAKE</span>
+                <h1 id="folder-import-title">Project Import &amp; Analysis</h1>
+                <p id="folder-import-status">Select a hardware project folder. AURA scans it, then creates a separate working copy. Your original files are never changed.</p>
+              </div>
+            </div>
+            <button id="close-import-button" class="icon-button" type="button" aria-label="Close project import">×</button>
+          </div>
+
+          <div class="import-dialog-content">
+            <div class="import-toolbar">
+              <div class="import-actions">
+                <button id="select-folder-button" class="button primary" type="button">Select Folder</button>
+                <button id="rescan-folder-button" class="button secondary" type="button" title="Rescan the original source folder and refresh this protected AURA copy." disabled>Rescan Folder</button>
+                <button id="set-top-module-button" class="button secondary" type="button" title="Available after importing a project with detected modules." disabled>Set Top Module</button>
+                <button id="project-settings-button" class="button secondary" type="button" title="Available after importing a project." disabled>Project Settings</button>
+                <span id="import-control-hint" class="import-control-hint">Import a project copy to enable rescan, top-module selection and project settings.</span>
+              </div>
+              <div class="import-actions">
+                <button id="export-project-button" class="button secondary hidden" type="button" title="Export the AURA working copy into a new folder after confirmation." disabled>Export AURA Copy</button>
+                <button id="confirm-import-button" class="button primary" type="button" disabled>Import Hardware Project</button>
+                <button id="start-design-button" class="button secondary" type="button" title="Creates an immutable version and runs the currently supported RTL-to-AURA-IR compiler stage." disabled>Start Design</button>
+              </div>
+            </div>
+
+            <div id="import-settings" class="import-settings hidden" aria-live="polite"></div>
+            <div id="import-error" class="workspace-notice hidden" role="alert"></div>
+            <div id="import-empty-state" class="import-empty-state">
+              <div class="empty-folder-icon" aria-hidden="true">↥</div>
+              <h2>Open an existing hardware project</h2>
+              <p>Choose a project folder to discover RTL, testbenches, constraints, technology files, IP and configuration. Review the scan before importing.</p>
+              <button id="empty-select-folder-button" class="button secondary" type="button">Browse project folders</button>
+              <span class="import-privacy-note">Read-only scan · Separate AURA copy · No changes to the selected folder</span>
+            </div>
+
+            <div id="import-results" class="import-results hidden">
+              <div id="import-summary" class="import-summary"></div>
+              <div class="import-section-heading">
+                <div>
+                  <h2>Project structure</h2>
+                  <p>Files are grouped by engineering role. Select a source file in the workspace after import to inspect or edit the AURA copy.</p>
+                </div>
+                <span id="import-scan-state" class="scan-state">SCAN READY</span>
+              </div>
+              <div id="import-tree" class="project-tree" aria-label="Scanned project file tree"></div>
+              <div class="import-section-heading diagnostics-heading">
+                <div>
+                  <h2>Modules, top-level and dependencies</h2>
+                  <p>Source inspection is best-effort. Review missing module references and unsupported formats before starting a supported stage.</p>
+                </div>
+              </div>
+              <div id="import-modules" class="module-grid"></div>
+              <div id="top-module-settings" class="top-module-settings hidden">
+                <label for="top-module-select">Top-level module</label>
+                <div class="top-module-controls">
+                  <select id="top-module-select" aria-describedby="top-module-help"></select>
+                  <button id="apply-top-module-button" class="button secondary" type="button">Apply selection</button>
+                </div>
+                <p id="top-module-help" class="muted">The top module is stored with this AURA project and used by the supported compiler stage.</p>
+              </div>
+              <div class="capability-note">
+                <strong>Supported stage today</strong>
+                <span>Start Design creates an immutable source version and runs the supported RTL-subset compiler to AURA IR. Local Icarus simulation runs selected testbenches. The workspace can also run OpenLane 2 + SKY130 locally after WSL and the EDA toolchain are installed; only real, verified GDSII and netlist artifacts are reported. Physical layout is shown only from verified GDSII; congestion analysis and signoff validation are not implemented.</span>
+              </div>
+              <div id="import-diagnostics" class="import-diagnostics" aria-live="polite"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <dialog id="new-project-dialog" class="upgrade-dialog" aria-labelledby="new-project-title">
+        <h2 id="new-project-title">Create AURA project</h2>
+        <p class="muted">Start a separate project workspace. Existing projects and files will not be changed.</p>
+        <form id="new-project-form" class="form-grid">
+          <label class="label" for="new-project-name">Project name</label>
+          <input id="new-project-name" class="input" name="name" type="text" minlength="2" maxlength="120" placeholder="e.g. RISC-V controller" required />
+          <p id="new-project-status" class="muted" role="status" aria-live="polite"></p>
+          <div class="dialog-actions">
+            <button id="new-project-cancel" class="button secondary" type="button">Cancel</button>
+            <button id="new-project-submit" class="button primary" type="submit">Create Project</button>
+          </div>
+        </form>
+      </dialog>
+      <div id="workspace-error" class="workspace-notice hidden" role="alert"></div>
+      <dialog id="usage-upgrade-modal" class="upgrade-dialog" aria-labelledby="upgrade-dialog-title">
+        <button id="upgrade-dialog-close" class="icon-button upgrade-close" type="button" aria-label="Close upgrade dialog">×</button>
+        <span class="eyebrow">PLAN USAGE</span>
+        <h2 id="upgrade-dialog-title">You've reached your current usage limit.</h2>
+        <p id="upgrade-dialog-message">Review plan options to continue with this operation. Other workspace functionality remains available.</p>
+        <div class="upgrade-dialog-actions">
+          <a class="button primary" href="/pricing">View Plans</a>
+          <button id="upgrade-dialog-later" class="button secondary" type="button">Continue Later</button>
+        </div>
+      </dialog>
+      <div class="engineering-grid">
+        <aside class="workspace-panel">
+          <h2>Project files</h2>
+          <div id="file-list" class="file-list"></div>
+          <label class="label" for="file-name">File name</label>
+          <input id="file-name" class="input" value="top.sv" maxlength="255" />
+          <p class="muted">Supported first-stage subset: module declarations, ports, net declarations, and continuous assignments.</p>
+        </aside>
+
+        <section class="workspace-panel editor-panel">
+          <div class="panel-heading">
+            <h2 id="editor-title">RTL source</h2>
+            <span id="editor-state" class="muted">Unsaved</span>
+          </div>
+          <label class="sr-only" for="rtl-editor">RTL source code</label>
+          <textarea id="rtl-editor" spellcheck="false" aria-label="RTL source code"></textarea>
+          <div class="workspace-subpanel">
+            <h2>Compiler output</h2>
+            <div id="compiler-output" class="compiler-output" aria-live="polite">Save RTL, create an immutable version, then compile it to AURA IR.</div>
+            <div class="ir-graph-panel">
+              <div class="panel-heading">
+                <h2>Compiled RTL dataflow graph</h2>
+                <span id="ir-graph-summary" class="muted">Compile valid RTL to inspect its AURA IR graph.</span>
+              </div>
+              <p class="muted">Built from compiler-validated AURA IR assignments. This is a signal dependency view, not a synthesized gate-level netlist or physical layout.</p>
+              <div id="ir-graph-viewport" class="ir-graph-viewport" role="img" aria-label="Compiled RTL dataflow graph">
+                <p id="ir-graph-empty" class="muted">No successful compile graph for this project yet.</p>
+                <svg id="ir-graph-svg" class="hidden" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="ir-graph-title ir-graph-description">
+                  <title id="ir-graph-title">Compiled RTL dataflow graph</title>
+                  <desc id="ir-graph-description">Signal dependencies from a successfully compiled AURA IR artifact.</desc>
+                </svg>
+              </div>
+              <div class="ai-action-row">
+                <button id="analyze-ir-graph-button" class="button secondary brief-button" type="button" disabled>Ask AI to Explain Graph</button>
+              </div>
+              <p id="ir-graph-ai-status" class="muted" role="status" aria-live="polite">AI graph explanation requires a successful compile, a configured provider, and the source-sharing consent below.</p>
+              <pre id="ir-graph-ai-output" class="compiler-output hidden" aria-live="polite"></pre>
+            </div>
+            <label class="checkbox-row ai-consent-row">
+              <input id="ai-auto-fix-consent" type="checkbox" />
+              On compile errors, allow AURA to send RTL and diagnostics to the configured AI provider and automatically apply a repair only if AURA's RTL compiler validates it.
+            </label>
+            <p id="ai-auto-fix-status" class="muted" role="status" aria-live="polite">Automatic repair is off until you opt in. It requires a configured AI provider and only handles compiler errors.</p>
+          </div>
+        </section>
+
+        <aside class="workspace-panel">
+          <h2>Engineering status</h2>
+          <div id="account-details" class="status-list"></div>
+          <div class="workspace-subpanel">
+            <h2>Usage</h2>
+            <div id="usage-meter-list" class="usage-meter-list" aria-live="polite"><span class="muted">Loading measured usage…</span></div>
+          </div>
+          <div class="workspace-subpanel">
+            <h2>Billing</h2>
+            <div id="billing-summary" class="billing-summary">Loading current plan…</div>
+            <a class="button secondary brief-button" href="/pricing">View plans</a>
+          </div>
+          <div class="workspace-subpanel">
+            <h2>Physical design</h2>
+            <p id="physical-design-status" class="muted" role="status" aria-live="polite">Checking local OpenLane 2 + SKY130 availability…</p>
+            <label class="label" for="physical-design-top-module">Top-level RTL module</label>
+            <input id="physical-design-top-module" class="input" maxlength="200" autocomplete="off" placeholder="e.g. top" />
+            <label class="checkbox-row ai-consent-row">
+              <input id="physical-design-execution-consent" type="checkbox" />
+              I trust this project RTL and authorize local execution with OpenLane 2 + SKY130 on this computer.
+            </label>
+            <button id="run-physical-design-button" class="button primary brief-button" type="button" disabled>Run Physical Design</button>
+            <label class="checkbox-row ai-consent-row">
+              <input id="auto-run-physical-design-after-generation" type="checkbox" />
+              After AI-generated RTL passes Icarus, automatically run local OpenLane 2 + SKY130 (up to 2 hours) and open the verified GDSII viewer when the real layout is ready.
+            </label>
+            <p class="muted">This separate opt-in authorizes physical execution for future AI-generated designs. It does not create or display placeholder layouts.</p>
+            <p id="physical-design-job-status" class="muted" role="status" aria-live="polite">No physical-design job has been run for this workspace.</p>
+            <pre id="physical-design-output" class="compiler-output hidden" aria-live="polite"></pre>
+            <div id="physical-design-artifacts" class="file-list" aria-label="Verified physical-design artifacts"></div>
+          </div>
+          <div class="workspace-subpanel">
+            <h2>Visualization mode</h2>
+            <p id="visualization-status" class="muted" role="status" aria-live="polite">Checking visualization availability…</p>
+            <p class="muted">The physical-layout viewer remains empty until this project's RTL has a completed OpenLane run with verified GDSII. It displays the real KLayout-extracted polygons as an interactive exploded 3D layer view and 2D top-down view; 3D layer spacing is illustrative, not fabricated thickness. Congestion analysis and signoff are not claimed.</p>
+            <a class="button secondary" href="/visualizer">View physical layout · GDSII required</a>
+          </div>
+          <div class="workspace-subpanel">
+            <h2>AURA IR artifacts</h2>
+            <div id="artifact-list" class="file-list"></div>
+          </div>
+          <div class="workspace-subpanel">
+            <h2>RTL Simulation</h2>
+            <label class="label" for="simulation-testbench">Testbench</label>
+            <select id="simulation-testbench" class="input" aria-label="Simulation testbench" disabled>
+              <option value="">Scanning project testbenches…</option>
+            </select>
+            <label class="checkbox-row ai-consent-row">
+              <input id="simulation-execution-consent" type="checkbox" />
+              I trust the selected or AI-generated HDL and authorize local execution in Icarus Verilog on this computer.
+            </label>
+            <button id="run-simulation-button" class="button primary brief-button" type="button" disabled>Run Simulation</button>
+            <p id="simulation-status" class="muted" role="status" aria-live="polite">Checking local Icarus Verilog simulator…</p>
+            <pre id="simulation-output" class="compiler-output hidden" aria-live="polite"></pre>
+          </div>
+          <div class="workspace-subpanel">
+            <h2>Hardware request</h2>
+            <p class="muted">Describe the hardware you want in plain language. AURA asks AI to create a new project with synthesizable RTL and a self-checking testbench, then compiles and simulates the candidate in Icarus. It saves the new project only after all testbench checks pass. Up to two AI repair attempts are made on compile/simulation errors.</p>
+            <label class="label" for="design-brief">Hardware specification and RTL-generation instructions</label>
+            <textarea id="design-brief" class="brief-input" aria-describedby="design-brief-help" placeholder="Describe what the hardware should do and how the RTL should be written. Example: Create a parameterized 4-bit up-counter with an active-high asynchronous reset, enable input, and rollover at the selected terminal count. Use synthesizable SystemVerilog, name the module counter, document every port, and test reset, hold, increment, rollover, and reset during counting."></textarea>
+            <p id="design-brief-help" class="muted">Be specific about module/port names, bit widths, clock and reset polarity, latency, signedness, parameter defaults, coding style, and expected tests. Generation creates a separate project only after its self-checking testbench passes Icarus.</p>
+            <button id="save-brief-button" class="button secondary brief-button" type="button">Save Design Brief</button>
+            <p id="design-brief-save-status" class="muted" role="status" aria-live="polite">Saved design briefs load again when you reopen this project.</p>
+            <label class="checkbox-row ai-consent-row">
+              <input id="ai-source-consent" type="checkbox" aria-describedby="ai-source-consent-help" />
+              I approve sending my hardware request to the configured AI provider.
+            </label>
+            <p id="ai-source-consent-help" class="muted">The initial request is sent to the provider. If generated RTL/testbench needs repair, that candidate and its diagnostics are also sent for up to two repair attempts. This checkbox starts unchecked for every session.</p>
+            <h3>Ask AI Hardware Engineer</h3>
+            <p class="muted">AI-generated code is untrusted. Before generation, also check “I trust the selected or AI-generated HDL…” under RTL Simulation to authorize local Icarus execution. AURA uses a temporary simulation copy with execution limits and saves a separate project only after it passes.</p>
+            <div class="ai-action-row">
+              <button id="ask-ai-button" class="button secondary brief-button" type="button" disabled>Ask AI Hardware</button>
+              <button id="generate-testbench-button" class="button secondary brief-button" type="button" disabled>Generate Testbench with AI</button>
+              <button id="generate-hardware-design-button" class="button primary brief-button" type="button" disabled>Generate RTL + Testbench</button>
+            </div>
+            <p id="ai-agent-status" class="muted" role="status" aria-live="polite">Checking whether an AI provider is configured…</p>
+            <pre id="ai-agent-response" class="compiler-output hidden" aria-live="polite"></pre>
+          </div>
+        </aside>
+      </div>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#05090f" />
+    <title>Physical Layout Viewer | AURA SILICON</title>
+    <meta name="description" content="Explore verified OpenLane GDSII layouts or a clearly illustrative Intel Core i7-1165G7-inspired concept model." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="icon" type="image/svg+xml" href="/aura-mark.svg" />
+  </head>
+  <body class="soc-standalone-shell">
+    <header class="soc-standalone-header">
+      <a class="brand" href="/"><img class="brand-mark" src="/aura-mark.svg" alt="" /><span>AURA SILICON</span></a>
+    </header>
+    <main class="soc-standalone-main">
+      <section class="soc-viewer-panel" aria-labelledby="physical-viewer-title">
+        <div class="panel-heading">
+          <div>
+            <span class="eyebrow">Physical designs · verified results and labeled concepts</span>
+            <h1 id="physical-viewer-title">Physical Layout Viewer</h1>
+            <p id="soc-viewer-status" class="muted" role="status" aria-live="polite">Loading your verified physical-design runs…</p>
+          </div>
+          <span id="physical-result-badge" class="soc-model-badge">LOAD A VERIFIED RUN OR OPEN A CONCEPT</span>
+        </div>
+        <p id="physical-result-description" class="muted">Verified layouts come from completed RTL-backed OpenLane runs. The i7-inspired concept is illustrative only and is not Intel silicon or GDSII.</p>
+        <div class="physical-results-controls">
+          <button id="physical-concept-toggle" class="button secondary" type="button">View i7-1165G7-inspired concept</button>
+          <span class="muted">Illustration only · not Intel’s actual chip layout</span>
+        </div>
+        <section class="physical-results" aria-label="Your physical design results">
+          <div class="physical-results-controls">
+            <label for="physical-result-select">Completed OpenLane run</label>
+            <select id="physical-result-select" disabled>
+              <option value="">Loading your completed runs…</option>
+            </select>
+            <a id="physical-results-signin" class="button secondary" href="/login" hidden>Sign in to load results</a>
+            <a class="button secondary" href="/workspace">Open workspace</a>
+          </div>
+          <p id="physical-results-status" class="muted" role="status" aria-live="polite">Loading private physical results for this AURA session…</p>
+          <div id="physical-result-artifacts" class="physical-result-artifacts" hidden></div>
+        </section>
+        <section id="physical-concept-preview" class="physical-layout-preview physical-concept-preview" aria-label="Illustrative Tiger Lake-inspired floorplan" hidden>
+          <div class="physical-layout-toolbar">
+            <strong>Illustrative floorplan · Intel Core i7-1165G7-inspired</strong>
+            <span>Conceptual arrangement only · 4 CPU cores · Xe-LP graphics concept · shared cache, system agent, media, memory and I/O</span>
+            <div class="physical-layout-toolbar-actions">
+              <span class="physical-concept-warning">NOT INTEL GDSII · NOT MEASURED SILICON · NOT FOR FABRICATION</span>
+              <button id="physical-concept-reset-view" class="button secondary" type="button">Reset view</button>
+              <button id="physical-concept-auto-rotate" class="button secondary" type="button" aria-pressed="false">Auto-rotate</button>
+              <button id="physical-concept-fullscreen" class="button secondary" type="button">Full screen</button>
+            </div>
+          </div>
+          <div id="physical-concept-3d" class="physical-layout-3d" role="img" aria-label="Illustrative, interactive 3D floorplan inspired by the Intel Core i7-1165G7"></div>
+          <p class="physical-layout-disclaimer">Tiger Lake-U specifications vary by SKU. This educational, artist-rendered floorplan is not based on Intel floorplan data, RTL, masks, or measured dimensions. Drag to orbit; scroll or pinch to zoom; right-drag to pan.</p>
+        </section>
+        <div id="physical-layout-preview" class="physical-layout-preview" hidden>
+          <div class="physical-layout-toolbar">
+            <strong>Verified GDSII geometry · extracted by KLayout</strong>
+            <span id="physical-layout-summary"></span>
+            <div class="physical-layout-toolbar-actions">
+              <div class="physical-layout-view-controls" role="group" aria-label="Physical layout view">
+                <button class="button secondary" type="button" data-layout-view="3d" aria-pressed="true">3D exploded layers</button>
+                <button class="button secondary" type="button" data-layout-view="2d" aria-pressed="false">2D top-down</button>
+              </div>
+              <div id="physical-layout-layers" class="soc-layer-controls" aria-label="GDSII layer visibility"></div>
+              <button id="physical-layout-reset-view" class="button secondary" type="button">Reset view</button>
+              <button id="physical-layout-auto-rotate" class="button secondary" type="button" aria-pressed="false">Auto-rotate</button>
+              <button id="physical-layout-fullscreen" class="button secondary" type="button">Full screen</button>
+            </div>
+          </div>
+          <div id="physical-layout-3d" class="physical-layout-3d" role="img" aria-label="Interactive exploded 3D view of polygons from verified GDSII"></div>
+          <div id="physical-layout-svg" class="physical-layout-svg" aria-label="Top-down geometry extracted from the selected, verified GDSII physical layout" hidden></div>
+          <p class="physical-layout-disclaimer">The 3D view uses the real X/Y polygons and layer identities from verified GDSII. Layer spacing is expanded for visibility; GDSII does not provide the fabricated Z thicknesses. This is not congestion analysis or signoff.</p>
+        </div>
+        <div id="physical-layout-empty" class="physical-layout-empty" role="status">
+          <strong>No physical layout available</strong>
+          <span>No generated RTL-backed OpenLane run with verified GDSII is available for this account. Nothing is rendered here until a real result exists.</span>
+        </div>
+      </section>
+    </main>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "/vendor/three/build/three.module.js",
+          "three/addons/": "/vendor/three/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module" src="/physical-results.js"></script>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+node_modules/
+data/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+npm-debug.log*
+desktop/release/
+desktop/setup/default-config.json
+examples/and-gate/runs/

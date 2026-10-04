@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout preview | AURA SILICON</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="icon" type="image/svg+xml" href="/aura-mark.svg" />
+    <script src="/checkout.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand" href="/"><img class="brand-mark" src="/aura-mark.svg" alt="" /><span>AURA SILICON</span></a>
+        <div class="nav-actions"><a class="button secondary" href="/pricing">Back to plans</a></div>
+      </div>
+    </header>
+    <main class="checkout-page container">
+      <span class="eyebrow">SECURE PLAN REVIEW</span>
+      <h1>Confirm your selected plan</h1>
+      <p class="muted">This page displays the plan and price calculated by the AURA backend. It will not charge you.</p>
+      <section class="checkout-card" aria-labelledby="checkout-plan">
+        <div class="checkout-plan-heading">
+          <div><span class="plan-name">SELECTED SUBSCRIPTION</span><h2 id="checkout-plan">Loading plan…</h2></div>
+          <span id="checkout-period" class="checkout-period">Monthly</span>
+        </div>
+        <dl class="checkout-details">
+          <div><dt>Account</dt><dd id="checkout-account">Sign in required</dd></div>
+          <div><dt>Billing currency</dt><dd id="checkout-base-price">—</dd></div>
+          <div><dt>Display currency</dt><dd id="checkout-display-price">—</dd></div>
+          <div><dt>Payment method</dt><dd id="checkout-payment-method">Not configured</dd></div>
+          <div><dt>Tax</dt><dd id="checkout-tax">Not calculated</dd></div>
+          <div class="checkout-total"><dt>Total</dt><dd id="checkout-total">—</dd></div>
+        </dl>
+        <div id="checkout-status" class="checkout-status" role="status" aria-live="polite">Loading server-priced checkout preview…</div>
+        <div class="checkout-actions">
+          <a id="checkout-signin" class="button secondary hidden" href="/login">Sign in to continue</a>
+          <button id="checkout-subscribe" class="button primary" type="button" disabled>Subscribe — payments unavailable</button>
+          <a class="button secondary" href="/pricing">Change plan</a>
+        </div>
+      </section>
+    </main>
+    <footer><div class="container download-footer"><a class="brand" href="/"><img class="brand-mark" src="/aura-mark.svg" alt="" /><span>AURA SILICON</span></a><span>No payment information is collected in this preview.</span></div></footer>
+  </body>
+</html>

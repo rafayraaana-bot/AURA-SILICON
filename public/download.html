@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Download AURA SILICON</title>
+    <meta name="description" content="Download status and platform access for AURA SILICON." />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="icon" type="image/svg+xml" href="/aura-mark.svg" />
+    <script src="/download.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand" href="/"><img class="brand-mark" src="/aura-mark.svg" alt="" /><span>AURA SILICON</span></a>
+        <nav class="nav-links" aria-label="Main navigation">
+          <a href="/#platform">Platform</a>
+          <a href="/#workflow">Workflow</a>
+        </nav>
+        <div class="nav-actions">
+          <a class="button secondary" href="/login">Sign In</a>
+          <a class="button primary" href="/signup">Get Started</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="download-page">
+      <section class="download-hero container">
+        <span class="eyebrow">AURA SILICON · PLATFORM ACCESS</span>
+        <h1>Download AURA SILICON</h1>
+        <p class="download-lede">Choose the AURA SILICON desktop app for your operating system. Download links are enabled only when the matching installer file is available.</p>
+
+        <div class="download-grid">
+          <article class="download-card windows-download-card">
+            <div class="download-card-heading">
+              <div class="download-platform-icon" aria-hidden="true">▣</div>
+              <div>
+                <span class="eyebrow">DESKTOP APPLICATION</span>
+                <h2>Windows</h2>
+              </div>
+            </div>
+            <p class="muted">AURA SILICON for Windows 10/11, 64-bit.</p>
+            <a id="windows-download-button" class="button primary download-cta" href="#" aria-disabled="true" tabindex="-1">Checking release…</a>
+            <p id="windows-release-status" class="release-status" role="status" aria-live="polite">Checking for a published Windows installer.</p>
+            <dl class="release-facts">
+              <div><dt>Latest version</dt><dd id="windows-version">Checking</dd></div>
+              <div><dt>System</dt><dd>Windows 10/11</dd></div>
+              <div><dt>Architecture</dt><dd>64-bit</dd></div>
+            </dl>
+            <p class="download-security-note">Unsigned Windows preview builds may trigger SmartScreen. Install only software from a source you trust.</p>
+          </article>
+
+          <article class="download-card macos-download-card">
+            <div class="download-card-heading">
+              <div class="download-platform-icon" aria-hidden="true">⌘</div>
+              <div>
+                <span class="eyebrow">DESKTOP APPLICATION</span>
+                <h2>macOS</h2>
+              </div>
+            </div>
+            <p class="muted">AURA SILICON for macOS 12 or later, Intel and Apple silicon.</p>
+            <a id="macos-download-button" class="button primary download-cta" href="#" aria-disabled="true" tabindex="-1">Checking release…</a>
+            <p id="macos-release-status" class="release-status" role="status" aria-live="polite">Checking for a published macOS release.</p>
+            <dl class="release-facts">
+              <div><dt>Latest version</dt><dd id="macos-version">Checking</dd></div>
+              <div><dt>System</dt><dd>macOS 12+</dd></div>
+              <div><dt>Architecture</dt><dd>Intel + Apple silicon</dd></div>
+            </dl>
+            <p class="download-security-note">macOS builds require platform-specific signing and notarization for a trusted public release.</p>
+          </article>
+
+          <article class="download-card linux-download-card">
+            <div class="download-card-heading">
+              <div class="download-platform-icon" aria-hidden="true">🐧</div>
+              <div>
+                <span class="eyebrow">DESKTOP APPLICATION</span>
+                <h2>Linux</h2>
+              </div>
+            </div>
+            <p class="muted">AURA SILICON AppImage for 64-bit Linux (x86_64).</p>
+            <a id="linux-download-button" class="button primary download-cta" href="#" aria-disabled="true" tabindex="-1">Checking release…</a>
+            <p id="linux-release-status" class="release-status" role="status" aria-live="polite">Checking for a published Linux release.</p>
+            <dl class="release-facts">
+              <div><dt>Latest version</dt><dd id="linux-version">Checking</dd></div>
+              <div><dt>Package</dt><dd>AppImage</dd></div>
+              <div><dt>Architecture</dt><dd>x64</dd></div>
+            </dl>
+            <p class="download-security-note">To run a downloaded AppImage, use a terminal in its folder: <code>chmod +x AURA-SILICON-*.AppImage &amp;&amp; ./AURA-SILICON-*.AppImage</code>.</p>
+          </article>
+        </div>
+        <section class="web-download-note">
+          <h2>Prefer the browser?</h2>
+          <p class="muted">The web workspace runs in a modern browser on Windows, macOS, and Linux.</p>
+          <a class="button secondary" href="/login">Open AURA SILICON Web</a>
+        </section>
+        <p class="download-platform-note">The desktop app connects to the AURA API and is not a standalone server. Local OpenLane physical-design execution currently requires Windows with WSL 2; macOS/Linux desktop builds do not include a native OpenLane runner. Installers come from real local preview files or published HTTPS releases.</p>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container download-footer">
+        <a class="brand" href="/"><img class="brand-mark" src="/aura-mark.svg" alt="" /><span>AURA SILICON</span></a>
+        <span>Engineering preview · Desktop installer status is checked against the release service.</span>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,85 @@
+{
+  "name": "aura-silicon-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "author": "AURA SILICON",
+  "desktopName": "AURA SILICON",
+  "description": "Secure cross-platform desktop shell for AURA SILICON",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win nsis",
+    "dist:mac": "electron-builder --mac dmg --universal",
+    "dist:linux": "electron-builder --linux AppImage --x64",
+    "dist:dir": "electron-builder --dir",
+    "predist:win": "node prepare-build-config.cjs",
+    "predist:mac": "node prepare-build-config.cjs",
+    "predist:linux": "node prepare-build-config.cjs",
+    "predist:dir": "node prepare-build-config.cjs"
+  },
+  "devDependencies": {
+    "electron": "^44.5.1",
+    "electron-builder": "^26.15.3"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9"
+  },
+  "build": {
+    "appId": "com.aurasilicon.desktop",
+    "productName": "AURA SILICON",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.cjs",
+      "preload.cjs",
+      "project-files.cjs",
+      "icon.ico",
+      "setup/**/*",
+      "package.json"
+    ],
+    "win": {
+      "icon": "icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "AURA-SILICON-Setup-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": false,
+      "installerIcon": "icon.ico",
+      "uninstallerIcon": "icon.ico"
+    },
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "artifactName": "AURA-SILICON-${version}-universal.${ext}",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["universal"]
+        }
+      ]
+    },
+    "linux": {
+      "category": "Development",
+      "icon": "../public/aura-mark.svg",
+      "syncDesktopName": true,
+      "artifactName": "AURA-SILICON-${version}-x64.${ext}",
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        }
+      ]
+    }
+  }
+}

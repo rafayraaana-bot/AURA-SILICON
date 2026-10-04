@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account | AURA SILICON</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="icon" type="image/svg+xml" href="/aura-mark.svg" />
+  </head>
+  <body>
+    <div class="auth-shell">
+      <div class="auth-card">
+        <div class="brand"><img class="brand-mark" src="/aura-mark.svg" alt="" /><span>AURA SILICON</span></div>
+        <h1>Create Your AURA SILICON Account</h1>
+        <p>Create an account to start an AURA engineering preview project.</p>
+
+        <form id="signup-form" class="form-grid">
+          <div>
+            <label class="label" for="signup-name">Name</label>
+            <input id="signup-name" class="input" type="text" name="name" placeholder="Full name" required />
+          </div>
+
+          <div>
+            <label class="label" for="signup-email">Email</label>
+            <input id="signup-email" class="input" type="email" name="email" placeholder="name@company.com" required />
+          </div>
+
+          <div>
+            <label class="label" for="signup-password">Password</label>
+            <input id="signup-password" class="input" type="password" name="password" placeholder="Create a password" required />
+          </div>
+
+          <div>
+            <label class="label" for="signup-confirm">Confirm Password</label>
+            <input id="signup-confirm" class="input" type="password" name="confirmPassword" placeholder="Repeat your password" required />
+          </div>
+
+          <button class="button primary" type="submit">Create Account</button>
+
+          <div class="auth-divider">or continue with</div>
+          <button class="button secondary social-button" type="button" data-auth-provider="google" disabled>Checking Google sign-in…</button>
+          <button class="button secondary social-button" type="button" data-auth-provider="github" disabled>Checking GitHub sign-in…</button>
+          <p id="auth-provider-status" class="auth-provider-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

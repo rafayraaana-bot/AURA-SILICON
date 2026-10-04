@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Connect to AURA SILICON</title>
+    <link rel="icon" href="../icon.ico" />
+    <link rel="stylesheet" href="./setup.css" />
+    <script src="./setup.js" defer></script>
+  </head>
+  <body>
+    <main class="connect-card">
+      <div class="brand"><img class="brand-mark" src="../icon.ico" alt="" /><span>AURA SILICON</span></div>
+      <span class="eyebrow">DESKTOP ENGINEERING WORKSPACE</span>
+      <h1>Connect to AURA SILICON</h1>
+      <p>This desktop app signs in to the AURA service configured for this release, then opens your web workspace. If no service is configured, enter its API base URL once; the app saves it for future launches.</p>
+      <form id="server-form">
+        <label for="server-url">AURA service URL</label>
+        <input id="server-url" name="url" type="url" placeholder="https://your-aura-service.example" autocomplete="url" required />
+        <label for="update-feed-url">Desktop update feed URL <span>(optional)</span></label>
+        <input id="update-feed-url" name="updateFeedUrl" type="url" placeholder="https://releases.example.com/aura/windows" autocomplete="url" />
+        <button type="submit">Connect to AURA SILICON</button>
+      </form>
+      <p id="connection-status" role="status" aria-live="polite">Secure HTTPS is required. HTTP is allowed only for localhost development.</p>
+      <div class="desktop-capabilities">
+        <strong>Native desktop capabilities</strong>
+        <span>Native folder selection · protected project import · confirmed project export · file-change alerts · operating-system secure storage (Linux requires a supported desktop keyring)</span>
+      </div>
+      <p class="release-note">This client does not provide an AI hardware agent, simulation, synthesis, physical design, GDSII or 3D chip rendering.</p>
+    </main>
+  </body>
+</html>

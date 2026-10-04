@@ -1,0 +1,10 @@
+*
+!Dockerfile
+!compose.yaml
+!package.json
+!package-lock.json
+!server.js
+!src
+!src/**
+!public
+!public/**

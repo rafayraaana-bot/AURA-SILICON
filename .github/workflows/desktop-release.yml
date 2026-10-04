@@ -1,0 +1,165 @@
+name: Build and publish signed desktop releases
+
+on:
+  push:
+    tags:
+      - "desktop-v*"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - name: Verify release tag matches desktop package version
+        shell: bash
+        run: |
+          package_version="$(node -p "require('./desktop/package.json').version")"
+          tag_version="${GITHUB_REF_NAME#desktop-v}"
+          test "$tag_version" = "$package_version" || {
+            echo "Tag version $tag_version does not match desktop package version $package_version." >&2
+            exit 1
+          }
+
+  build:
+    needs: validate
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: windows
+            runner: windows-latest
+            artifact: "desktop-windows"
+            release_file: "AURA-SILICON-Setup-*-x64.exe"
+            package_command: "npm run dist:win"
+          - platform: macos
+            runner: macos-latest
+            artifact: "desktop-macos"
+            release_file: "AURA-SILICON-*-universal.dmg"
+            package_command: "npm run dist:mac"
+          - platform: linux
+            runner: ubuntu-24.04
+            artifact: "desktop-linux"
+            release_file: "AURA-SILICON-*-x64.AppImage*"
+            package_command: "npm run dist:linux"
+    runs-on: ${{ matrix.runner }}
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - run: npm ci
+      - name: Import Windows signing certificate
+        if: matrix.platform == 'windows'
+        shell: pwsh
+        env:
+          WINDOWS_CERTIFICATE_BASE64: ${{ secrets.WINDOWS_CERTIFICATE_BASE64 }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+        run: |
+          if (-not $env:WINDOWS_CERTIFICATE_BASE64 -or -not $env:WINDOWS_CERTIFICATE_PASSWORD) {
+            throw "Configure WINDOWS_CERTIFICATE_BASE64 and WINDOWS_CERTIFICATE_PASSWORD repository secrets before publishing a signed Windows release."
+          }
+          $certificatePath = Join-Path $env:RUNNER_TEMP "aura-silicon-signing.pfx"
+          [IO.File]::WriteAllBytes($certificatePath, [Convert]::FromBase64String($env:WINDOWS_CERTIFICATE_BASE64))
+          "CSC_LINK=$certificatePath" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          "CSC_KEY_PASSWORD=$env:WINDOWS_CERTIFICATE_PASSWORD" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Import Apple signing certificate
+        if: matrix.platform == 'macos'
+        shell: bash
+        env:
+          APPLE_CERTIFICATE_BASE64: ${{ secrets.APPLE_CERTIFICATE_BASE64 }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          for name in APPLE_CERTIFICATE_BASE64 APPLE_CERTIFICATE_PASSWORD APPLE_ID APPLE_APP_SPECIFIC_PASSWORD APPLE_TEAM_ID; do
+            if [ -z "${!name}" ]; then
+              echo "Configure the $name repository secret before publishing a signed and notarized macOS release." >&2
+              exit 1
+            fi
+          done
+          certificate_path="$RUNNER_TEMP/aura-silicon-signing.p12"
+          keychain_path="$RUNNER_TEMP/aura-silicon-signing.keychain-db"
+          echo "$APPLE_CERTIFICATE_BASE64" | base64 --decode > "$certificate_path"
+          security create-keychain -p "$APPLE_CERTIFICATE_PASSWORD" "$keychain_path"
+          security set-keychain-settings -lut 21600 "$keychain_path"
+          security unlock-keychain -p "$APPLE_CERTIFICATE_PASSWORD" "$keychain_path"
+          security import "$certificate_path" -k "$keychain_path" -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign -T /usr/bin/productbuild
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$APPLE_CERTIFICATE_PASSWORD" "$keychain_path"
+          security list-keychains -d user -s "$keychain_path"
+          {
+            echo "CSC_LINK=$certificate_path"
+            echo "CSC_KEY_PASSWORD=$APPLE_CERTIFICATE_PASSWORD"
+            echo "APPLE_ID=$APPLE_ID"
+            echo "APPLE_APP_SPECIFIC_PASSWORD=$APPLE_APP_SPECIFIC_PASSWORD"
+            echo "APPLE_TEAM_ID=$APPLE_TEAM_ID"
+          } >> "$GITHUB_ENV"
+      - name: Build signed platform installer
+        env:
+          AURA_DESKTOP_DEFAULT_SERVER_URL: ${{ vars.AURA_PUBLIC_URL }}
+        run: ${{ matrix.package_command }}
+      - name: Verify release artifact
+        shell: bash
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          case "${{ matrix.platform }}" in
+            windows) expected="AURA-SILICON-Setup-${version}-x64.exe" ;;
+            macos) expected="AURA-SILICON-${version}-universal.dmg" ;;
+            linux) expected="AURA-SILICON-${version}-x64.AppImage" ;;
+          esac
+          test -s "release/$expected" || {
+            echo "Expected installer release/$expected was not created." >&2
+            find release -maxdepth 1 -type f -print >&2
+            exit 1
+          }
+          if [ "${{ matrix.platform }}" = "linux" ]; then
+            sha256sum "release/$expected" > "release/$expected.sha256"
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: desktop/release/${{ matrix.release_file }}
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: desktop-*
+          path: release-assets
+          merge-multiple: true
+      - name: Generate checksums and publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          cd release-assets
+          find . -type f ! -name SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt
+          gh release create "$RELEASE_TAG" ./* \
+            --repo "$GH_REPO" \
+            --title "AURA SILICON ${RELEASE_TAG#desktop-v}" \
+            --generate-notes \
+            --verify-tag
